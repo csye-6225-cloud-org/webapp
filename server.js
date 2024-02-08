@@ -28,11 +28,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.disable("etag");
 
-app.use(basicAuth);
+// app.use(basicAuth);
 
 //importing db info and syncing db
 const db = require("./app/models");
-db.sequelize.sync()
+db.sequelize.sync({ alter: true })
   .then(() => {
     console.log("postgres db sync successful");
   })

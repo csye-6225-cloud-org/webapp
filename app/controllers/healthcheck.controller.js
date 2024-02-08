@@ -9,7 +9,7 @@ exports.checkdbconnection = async (req, res) => {
 
     //checking validity of request
     // console.log(req.headers["content-type"]);
-    if (checkpayload(req) == true){
+    if (checkpayload(req) == true || Object.keys(req.query).length>0){
         res.status(400).end();
     }else{
         try {
@@ -30,7 +30,7 @@ exports.invalidhealthcheck =  async (req, res) => {
     res.set('Content-Type', 'application/json');
     res.set('X-Content-Type-Options', 'nosniff');
 
-    if (checkpayload(req) == true){
+    if (checkpayload(req) == true || Object.keys(req.query).length>0){
         res.status(400).end();
     }else{
         res.status(405).end();
