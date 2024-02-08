@@ -1,9 +1,9 @@
 const DataTypes = require('sequelize').DataTypes;
+const bcrypt = require("bcrypt");
 
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("User", {
       id: {
-        primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV1
       },
@@ -17,6 +17,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING
       },
       username: {
+        primaryKey: true,
         type: Sequelize.STRING,
         validate: {
             isEmail: true
@@ -28,7 +29,18 @@ module.exports = (sequelize, Sequelize) => {
       account_updated: {
         type: Sequelize.DATE
       }
-    });
+    // }, 
+    // {
+    //   freezeTableName: true,
+    //   instanceMethods: {
+    //       generateHash(password) {
+    //           return bcrypt.hash(password, bcrypt.genSaltSync(8));
+    //       },
+    //       validPassword(password) {
+    //           return bcrypt.compare(password, this.password);
+    //       }
+    //   }
+  });
   
     return User;
   };
