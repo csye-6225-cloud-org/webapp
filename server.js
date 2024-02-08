@@ -20,11 +20,15 @@ Integration testing
 const express = require("express");
 const bodyParser = require("body-parser");
 
+const basicAuth = require('express-basic-auth');
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.disable("etag");
+
+app.use(basicAuth);
 
 //importing db info and syncing db
 const db = require("./app/models");
@@ -38,6 +42,7 @@ db.sequelize.sync()
 
 //importing routes
 require("./app/routes/healthcheck.routes")(app);
+require("./app/routes/user.routes")(app);
 
 //starting server
 const PORT = process.env.PORT || 8080;
