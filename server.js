@@ -20,8 +20,6 @@ Integration testing
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const basicAuth = require('express-basic-auth');
-
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
