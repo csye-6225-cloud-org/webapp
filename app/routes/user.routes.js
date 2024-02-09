@@ -13,52 +13,144 @@ module.exports = app => {
 
     router.get("/", basicAuth({ authorizer: passwordAuthorizer, authorizeAsync: true }), user.getuser);
 
-    // router.put("/self", healthcheck.invalidhealthcheck);
+    router.put("/", basicAuth({ authorizer: passwordAuthorizer, authorizeAsync: true }), user.updateuser);
 
     router.post("/", user.createuser);
 
     //base route
     app.use('/v1/user', router);
 
-    function passwordAuthorizer (username, password, cb) {
-        if (passwordVerifier(username, password)){
-            console.log("Verified at passwordAuthorizer")
-            return cb(null, true)
-        }
-        else{
-            console.log("Failed at passwordAuthorizer")
-            return cb(null, false)
-        }
+    async function passwordAuthorizer (username, password, cb) {
+        User.findByPk(username)
+            .then(data => {
+                if (data) {
+                    hash = data.password;
+                    console.log("Hash found: " + hash);
+                    bcrypt.compare(password, hash, function(err, result) {
+                        if (result) {
+                            console.log("Password verified");
+                            return cb(null, true);
+                        }
+                        else {
+                            console.log("Password not verified");
+                            return cb(null, false);
+                        }
+                    })
+                } else{
+                    console.log("User not found: " + username)
+                    return cb(null, false);
+                }
+            })
+            .catch(err => {
+                console.log("error while verfying pwd " + err)
+                return cb(null, false);
+            });
+        // passwordVerifier(username, password)
+        // .then(
+        //     (success) => {
+        //         // Some task on success
+        //         console.log("Verified at passwordAuthorizer")
+        //         return cb(null, true)
+        //     },
+        //     (failure) => {
+        //         // Some task on failure
+        //         console.log("Failed at passwordAuthorizer")
+        //         return cb(null, false)
+        //     }
+        // if (await passwordVerifier(username, password)){
+        //     console.log("Verified at passwordAuthorizer")
+        //     return cb(null, true)
+        // }
+        // else{
+        //     console.log("Failed at passwordAuthorizer")
+        //     return cb(null, false)
+        // }
+        // )
+        
+        // return cb(null, false);
     }
 
-    function passwordVerifier (username, password) {
-        //get row based on username
+    // async function passwordAuthorizer (username, password, cb) {
+    //     passwordVerifier(username, password)
+    //     .then(
+    //         (success) => {
+    //             // Some task on success
+    //             console.log("Verified at passwordAuthorizer")
+    //             return cb(null, true)
+    //         },
+    //         (failure) => {
+    //             // Some task on failure
+    //             console.log("Failed at passwordAuthorizer")
+    //             return cb(null, false)
+    //         }
+    //     // if (await passwordVerifier(username, password)){
+    //     //     console.log("Verified at passwordAuthorizer")
+    //     //     return cb(null, true)
+    //     // }
+    //     // else{
+    //     //     console.log("Failed at passwordAuthorizer")
+    //     //     return cb(null, false)
+    //     // }
+    //     )
+        
+    //     // return cb(null, false);
+    // }
+
+    async function passwordVerifier (username, password) {
+        try{
+            //get row based on username
     
-        var hash;
-        User.findByPk(username)
-        .then(data => {
-            if (data) {
-                hash = data.password;
+            var hash;
+
+            const data = await User.findByPk(username);
+            if(data){
+            hash = data.password;
                 console.log("Hash found: " + hash);
-                bcrypt.compare(password, hash, function(err, result) {
+                await bcrypt.compare(password, hash, function(err, result) {
                     if (result) {
                         console.log("Password verified");
                         return true;
                     }
                     else {
-                        console.log("Password not verified");
+                        console.log("Password incorrect");
+                        // throw new Exception("Password incorrect");
                         return false;
                     }
-                  })
-            } else{
+                })
+            }else{
                 console.log("User not found: " + username)
-                return false;
+                    return false;
             }
-        })
-        .catch(err => {
-            console.log("error while verfying pwd " + err)
+
+            
+            // User.findByPk(username)
+            // .then(data => {
+            //     if (data) {
+            //         hash = data.password;
+            //         console.log("Hash found: " + hash);
+            //         bcrypt.compare(password, hash, function(err, result) {
+            //             if (result) {
+            //                 console.log("Password verified");
+            //                 return true;
+            //             }
+            //             else {
+            //                 console.log("Password not verified");
+            //                 return false;
+            //             }
+            //         })
+            //     } else{
+            //         console.log("User not found: " + username)
+            //         return false;
+            //     }
+            // })
+            // .catch(err => {
+            //     console.log("error while verfying pwd " + err)
+            //     return false;
+            // });
+        }catch(err){
+            console.log("error while verfying pwd " + err);
             return false;
-          });
+        }
       }
 
 };
