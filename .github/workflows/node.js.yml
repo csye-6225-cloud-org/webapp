@@ -18,3 +18,4 @@ jobs:
           node-version: '20.11.0'
       - run: npm ci
       - run: echo "Hello World"
+      - run: exit 1
