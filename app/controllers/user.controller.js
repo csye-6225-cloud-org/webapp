@@ -11,6 +11,7 @@ exports.createuser =  async (req, res) => {
     if( Object.keys(req.query).length > 0 || req.body.first_name == "" || req.body.first_name == null || req.body.first_name == undefined || req.body.last_name == "" || req.body.last_name == null || req.body.last_name == undefined 
     || req.body.password == "" || req.body.password == null || req.body.password == undefined || req.body.username == "" || req.body.username == null || req.body.username == undefined ){
         res.status(400).end();
+        return;
     }
 
     this.passwordEncrypter(req.body.password).then(
@@ -42,7 +43,7 @@ exports.createuser =  async (req, res) => {
                 .catch(err => {
                     //following line throws error when creation fails - problem
                     
-                    res.status(500).send({
+                    res.status(400).send({
                       message: "Error creating User with username: " + user.username + " " +err
                     });
                 });
@@ -51,7 +52,7 @@ exports.createuser =  async (req, res) => {
         (onRejected) => {
             console.log("Error with password hashing: "+ onRejected);
             // Some task on failure
-            res.status(500).send({
+            res.status(400).send({
                 message: onRejected
               });
         }
@@ -75,6 +76,7 @@ exports.getuser =  async (req, res) => {
 
     if( Object.keys(req.query).length > 0){
         res.status(400).end();
+        return;
     }
 
     // res.status(200).end();
@@ -101,7 +103,7 @@ exports.getuser =  async (req, res) => {
             }
             })
         .catch(err => {
-            res.status(500).send({
+            res.status(400).send({
                 message: "Error retrieving User with id=" + username +" " + err
             });
         });
@@ -112,8 +114,14 @@ exports.updateuser =  async (req, res) => {
     res.set('Content-Type', 'application/json');
     res.set('X-Content-Type-Options', 'nosniff');
 
-    if( Object.keys(req.query).length > 0 || req.body.username == "" || req.body.username == null || req.body.username == undefined ){
-        res.status(400).send("Username cannot be empty");
+    if( Object.keys(req.query).length > 0 || 
+        !(req.body.username == "" || req.body.username == null || req.body.username == undefined) ||
+        !(req.body.id == "" || req.body.id == null || req.body.id == undefined) ||
+        !(req.body.account_created == "" || req.body.account_created == null || req.body.account_created == undefined) ||
+        !(req.body.account_updated == "" || req.body.account_updated == null || req.body.account_updated == undefined)
+        ){
+        res.status(400).send("Unchangeable fields cannot be changed");
+        return;
     }
 
     // parse login and password from headers
@@ -128,9 +136,6 @@ exports.updateuser =  async (req, res) => {
     }
     if(req.body.last_name != "" && req.body.last_name != null && req.body.last_name != undefined){
         valuestoupdate.last_name = req.body.last_name;
-    }
-    if(req.body.username != "" && req.body.username != null && req.body.username != undefined){
-        valuestoupdate.username = req.body.username;
     }
     if(req.body.password != "" && req.body.password != null && req.body.password != undefined){
         valuestoupdate.password = req.body.password;
@@ -156,7 +161,7 @@ exports.updateuser =  async (req, res) => {
                     }
                   })
                   .catch(err => {
-                    res.status(500).send({
+                    res.status(400).send({
                       message: "Error updating User with username=" + username + " "+ err
                     });
                   });
@@ -164,7 +169,7 @@ exports.updateuser =  async (req, res) => {
             (onRejected) => {
                 console.log("Error with password hashing: "+ onRejected);
                 // Some task on failure
-                res.status(500).send({
+                res.status(400).send({
                     message: onRejected
                 });
             }
@@ -183,22 +188,12 @@ exports.updateuser =  async (req, res) => {
                 }
               })
               .catch(err => {
-                res.status(500).send({
+                res.status(400).send({
                   message: "Error updating User with username=" + username + " " + err
                 });
               });
         }
     }
-
-
-
-
-// exports.passwordAuthorizer = function (username, password, cb) {
-//     if (this.passwordVerifier(username, password))
-//         return cb(null, true)
-//     else
-//         return cb(null, false)
-// }
 
 exports.passwordEncrypter = async function(password) {
     try {
@@ -211,39 +206,3 @@ exports.passwordEncrypter = async function(password) {
       console.error(err.message);
     }
   }
-
-// exports.passwordVerifier = function(username, password) {
-//     //get row based on username
-
-//     var hash;
-//     User.findByPk(username)
-//     .then(data => {
-//         if (data) {
-//             hash = data.password;
-//         } else{
-//             console.log("User not found: " + username)
-//             return false;
-//         }
-//     })
-//     .catch(err => {
-//         console.log("error while verfying pwd " + err)
-//         return false;
-//       });
-
-//     console.log("Hash found: " + hash);
-
-//     if(bcrypt.compare(password, hash, function(err, result) {
-//         if (result) {
-//             console.log("Password verified");
-//             return true;
-//         }
-//         else {
-//             console.log("Password not verified");
-//             return false;
-//         }
-//       })){
-
-//       }
-//   }
-
-  

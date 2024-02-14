@@ -45,56 +45,8 @@ module.exports = app => {
                 console.log("error while verfying pwd " + err)
                 return cb(null, false);
             });
-        // passwordVerifier(username, password)
-        // .then(
-        //     (success) => {
-        //         // Some task on success
-        //         console.log("Verified at passwordAuthorizer")
-        //         return cb(null, true)
-        //     },
-        //     (failure) => {
-        //         // Some task on failure
-        //         console.log("Failed at passwordAuthorizer")
-        //         return cb(null, false)
-        //     }
-        // if (await passwordVerifier(username, password)){
-        //     console.log("Verified at passwordAuthorizer")
-        //     return cb(null, true)
-        // }
-        // else{
-        //     console.log("Failed at passwordAuthorizer")
-        //     return cb(null, false)
-        // }
-        // )
-        
-        // return cb(null, false);
     }
 
-    // async function passwordAuthorizer (username, password, cb) {
-    //     passwordVerifier(username, password)
-    //     .then(
-    //         (success) => {
-    //             // Some task on success
-    //             console.log("Verified at passwordAuthorizer")
-    //             return cb(null, true)
-    //         },
-    //         (failure) => {
-    //             // Some task on failure
-    //             console.log("Failed at passwordAuthorizer")
-    //             return cb(null, false)
-    //         }
-    //     // if (await passwordVerifier(username, password)){
-    //     //     console.log("Verified at passwordAuthorizer")
-    //     //     return cb(null, true)
-    //     // }
-    //     // else{
-    //     //     console.log("Failed at passwordAuthorizer")
-    //     //     return cb(null, false)
-    //     // }
-    //     )
-        
-    //     // return cb(null, false);
-    // }
 
     async function passwordVerifier (username, password) {
         try{
@@ -122,31 +74,6 @@ module.exports = app => {
                     return false;
             }
 
-            
-            // User.findByPk(username)
-            // .then(data => {
-            //     if (data) {
-            //         hash = data.password;
-            //         console.log("Hash found: " + hash);
-            //         bcrypt.compare(password, hash, function(err, result) {
-            //             if (result) {
-            //                 console.log("Password verified");
-            //                 return true;
-            //             }
-            //             else {
-            //                 console.log("Password not verified");
-            //                 return false;
-            //             }
-            //         })
-            //     } else{
-            //         console.log("User not found: " + username)
-            //         return false;
-            //     }
-            // })
-            // .catch(err => {
-            //     console.log("error while verfying pwd " + err)
-            //     return false;
-            // });
         }catch(err){
             console.log("error while verfying pwd " + err);
             return false;

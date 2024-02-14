@@ -1,0 +1,34 @@
+name: Webapp Tests CI
+
+on: 
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Webapp Tests CI job
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ikalnytskyi/action-setup-postgres@v5
+        with:
+          username: anuraag
+          password: CloudDBPassword@321
+          database: anuraag
+          port: 5432
+        id: postgres
+      - run: pytest -vv tests/
+        env:
+          CONNECTION_STR: ${{ steps.postgres.outputs.connection-uri }}
+      - run: pytest -vv tests/
+        env:
+          CONNECTION_STR: service=${{ steps.postgres.outputs.service-name }}
+          
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.11.0'
+      - run: npm ci
+      - run: npm test

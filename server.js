@@ -15,6 +15,20 @@ Integration testing
     https://stackoverflow.com/questions/71121350/typeerror-app-app-close-is-not-a-function-using-jest-27-5-1
     https://jestjs.io/docs/cli#--forceexit
     https://github.com/ladjs/supertest
+
+Basic Auth
+    https://www.npmjs.com/package/express-basic-auth
+
+Boostrapping DB
+    https://sequelize.org/docs/v7/models/model-synchronization/
+    https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/
+    https://stackoverflow.com/questions/50414899/node-js-sequelize-uuid-primary-key-postgres
+    https://sequelize.org/docs/v6/
+    https://sequelize.org/docs/v7/models/auto-timestamps/
+
+Bcrypt
+    https://blog.logrocket.com/password-hashing-node-js-bcrypt/
+    https://www.educative.io/answers/how-to-hash-passwords-using-bcrypt-in-nodejs
 */
 
 const express = require("express");
