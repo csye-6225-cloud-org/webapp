@@ -135,7 +135,6 @@ describe('A03- Create an account', () => {
     expect(res1.body.id).toEqual(res.body.id);
     expect(res1.body.account_created).toEqual(res.body.account_created);
     expect(res1.body.account_updated).toEqual(res.body.account_updated);
-
   });
 });
 
@@ -161,6 +160,5 @@ describe('A03- Update the account', () => {
     expect(res1.status).toBe(200);
     expect(res1.body.first_name).toEqual("AnuraagMOD");
     expect(res1.body.last_name).toEqual("BathulaMOD");
-
   });
 });
