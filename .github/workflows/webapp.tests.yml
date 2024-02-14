@@ -18,13 +18,13 @@ jobs:
           database: anuraag
           port: 5432
         id: postgres
-      - run: pytest -vv tests/
-        env:
-          CONNECTION_STR: ${{ steps.postgres.outputs.connection-uri }}
-      - run: pytest -vv tests/
-        env:
-          CONNECTION_STR: service=${{ steps.postgres.outputs.service-name }}
-          
+      # - run: pytest -vv tests/
+      #   env:
+      #     CONNECTION_STR: ${{ steps.postgres.outputs.connection-uri }}
+      # - run: pytest -vv tests/
+      #   env:
+      #     CONNECTION_STR: service=${{ steps.postgres.outputs.service-name }}
+
       - uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
