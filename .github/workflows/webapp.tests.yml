@@ -13,9 +13,9 @@ jobs:
     steps:
       - uses: ikalnytskyi/action-setup-postgres@v5
         with:
-          username: anuraag
-          password: CloudDBPassword@321
-          database: anuraag
+          username: ${{ secrets.POSTGRES_USERNAME }}
+          password: ${{ secrets.POSTGRES_PASSWORD }}
+          database: ${{ secrets.POSTGRES_DATABASE }}
           port: 5432
         id: postgres
       # - run: pytest -vv tests/
