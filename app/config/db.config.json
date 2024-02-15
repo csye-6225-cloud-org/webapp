@@ -1,7 +1,7 @@
 {
     "HOST": "localhost",
     "USER": "anuraag",
-    "PASSWORD": "CloudDBPassword@321",
+    "PASSWORD": "*************",
     "DB": "anuraag",
     "dialect": "postgres",
     "pool": {

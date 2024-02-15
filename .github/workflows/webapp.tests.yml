@@ -30,5 +30,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.11.0'
+
+      - name: 'Setup jq'
+        uses: dcarbone/install-jq-action@v2
+        with:
+          version: '1.7'
+      - name: 'Check jq'
+        # language=sh
+        run: |
+          which jq
+          jq --version
+      
+      - name: 'Set db from repo secret'
+        run: |
+          jq '.PASSWORD = $newVal' --arg newVal '${{ secrets.POSTGRES_PASSWORD }}' app/config/db.config.json > tmp.$$.json && mv tmp.$$.json app/config/db.config.json
+        
+      - run: cat app/config/db.config.json
+
       - run: npm ci
       - run: npm test
