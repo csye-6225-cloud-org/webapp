@@ -8,5 +8,6 @@
 
 ## Build and Deploy instructions for the web application-
 1) Navigate to inside webapp folder
-2) In cmd, run "npm i"
-3) In cmd, run "npm run dev"
+2) Add DB auth details to app/config/db.config.json
+3) In cmd, run "npm i"
+4) In cmd, run "npm run dev"
