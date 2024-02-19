@@ -162,3 +162,10 @@ describe('A03- Update the account', () => {
     expect(res1.body.last_name).toEqual("BathulaMOD");
   });
 });
+
+describe('A04- Test failure', () => {
+  it('test failure', async () => { 
+
+    expect(true).toEqual(false);
+  });
+});
