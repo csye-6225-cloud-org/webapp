@@ -25,7 +25,7 @@ jobs:
   
       - name: Run `packer fmt`
         id: init
-        run: "[[ -z $(packer fmt .) ]] || echo `Format check failed` && exit 1
+        run: "[[ -z $(packer fmt .) ]] || echo `Format check failed` && exit 1"
   
       - name: Run `packer validate`
         id: validate
