@@ -30,7 +30,11 @@ jobs:
       - name: Run `packer fmt`
         id: fmt
         run: "[[ -z $(packer fmt .) ]] || exit 1"
-  
+
+      - name: Run `zip`
+        id: zip
+        run: "zip -r webapp.zip ./app build.pkr.hcl build.sh csye6225.service package.json package-lock.json server.js variables.pkrvars.hcl"
+
       - name: Run `packer validate`
         id: validate
         run: "packer validate ."
