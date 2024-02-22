@@ -76,4 +76,4 @@ jobs:
       - name: Run `packer build`
         id: build
         run: |
-          packer build -var "gcp_service_acc_key=${{ secrets.GCP_SECURITY_CREDENTIALS}}" .
+          packer build -parallel-builds=1 -var "gcp_service_acc_key=${{ secrets.GCP_SECURITY_CREDENTIALS}}" build.pkr.hcl
