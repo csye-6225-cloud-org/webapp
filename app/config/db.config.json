@@ -1,7 +1,7 @@
 {
     "HOST": "localhost",
     "USER": "postgres",
-    "PASSWORD": "***************",
+    "PASSWORD": "****************",
     "DB": "postgres",
     "dialect": "postgres",
     "pool": {
