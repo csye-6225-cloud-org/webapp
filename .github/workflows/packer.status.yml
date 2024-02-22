@@ -22,9 +22,13 @@ jobs:
         id: setup
         with:
           version: '1.10.1'
-  
-      - name: Run `packer fmt`
+
+      - name: Run `packer init`
         id: init
+        run: "packer init ."
+
+      - name: Run `packer fmt`
+        id: fmt
         run: "[[ -z $(packer fmt .) ]] || exit 1"
   
       - name: Run `packer validate`
