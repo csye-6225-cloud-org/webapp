@@ -1,8 +1,8 @@
 {
     "HOST": "localhost",
-    "USER": "anuraag",
-    "PASSWORD": "*************",
-    "DB": "anuraag",
+    "USER": "postgres",
+    "PASSWORD": "***************",
+    "DB": "postgres",
     "dialect": "postgres",
     "pool": {
       "max": 5,

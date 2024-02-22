@@ -1,0 +1,32 @@
+name: Packer CI Status Check
+
+on: 
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Packer CI Status Check
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.11.0'
+
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: '1.10.1'
+  
+      - name: Run `packer fmt`
+        id: init
+        run: "[[ -z $(packer fmt .) ]] || echo `Format check failed` && exit 1
+  
+      - name: Run `packer validate`
+        id: validate
+        run: "packer validate ."
