@@ -17,10 +17,10 @@ source "googlecompute" "packer-image" {
   project_id          = "csye-6225-project-dev"
   source_image_family = "centos-stream-8"
   ssh_username        = "pkr-gcp-user"
-  credentials_file = "gcp-creds.json"
-  network          = "default"
-  region           = "us-east1"
-  zone             = "us-east1-b"
+  credentials_file    = "gcp-creds.json"
+  network             = "default"
+  region              = "us-east1"
+  zone                = "us-east1-b"
   // machine_type = "e2-medium"
 }
 
