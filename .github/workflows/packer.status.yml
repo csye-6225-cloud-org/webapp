@@ -39,7 +39,8 @@ jobs:
         run: |
           touch gcp-creds.json
           echo "${{ secrets.GCP_SECURITY_CREDENTIALS }}" > gcp-creds.json
+          packer
 
       - name: Run `packer validate`
         id: validate
-        run: "packer validate ."
+        run: "PACKER_LOG=1 packer validate build.pkr.hcl"
