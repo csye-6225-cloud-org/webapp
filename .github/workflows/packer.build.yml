@@ -52,14 +52,14 @@ jobs:
       - run: npm test
 
       - name: Setup `packer`
-        # uses: hashicorp/setup-packer@main
-        # id: setup
-        # with:
-        #   version: '1.10.1'
-        run: |
-            curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-            sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-            sudo apt-get update && sudo apt-get install packer
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: '1.10.1'
+        # run: |
+        #     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+        #     sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+        #     sudo apt-get update && sudo apt-get install packer
 
       - name: Run `packer init`
         id: init
@@ -71,12 +71,12 @@ jobs:
 
       - name: Run `zip`
         id: zip
-        run: "zip -r webapp.zip ./app build.pkr.hcl build.sh csye6225.service package.json package-lock.json server.js variables.pkrvars.hcl"
+        run: "zip -r webapp.zip ./"
 
-      # - name: Configure GCP creds
-      #   run: |
-      #     touch gcp-creds.json
-      #     echo "${{ secrets.GCP_CREDS }}" > gcp-creds.json
+      - name: Configure GCP creds
+        run: |
+          touch gcp-creds.json
+          echo "${{ secrets.GCP_SECURITY_CREDENTIALS }}" > gcp-creds.json
 
       - name: Run `packer validate`
         id: validate
@@ -85,4 +85,7 @@ jobs:
       - name: Run `packer build`
         id: build
         run: |
-          PACKER_LOG=1 packer build -parallel-builds=1 -force -var "gcp_service_acc_key=${{ secrets.GCP_SECURITY_CREDENTIALS}}" build.pkr.hcl
+          PACKER_LOG=1 packer build -parallel-builds=1 -force build.pkr.hcl
+        # -var "gcp_service_acc_key=${{ secrets.GCP_SECURITY_CREDENTIALS}}"
+        env: 
+          CI: ""
