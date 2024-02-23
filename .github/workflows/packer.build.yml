@@ -69,10 +69,10 @@ jobs:
         id: zip
         run: "zip -r webapp.zip ./app build.pkr.hcl build.sh csye6225.service package.json package-lock.json server.js variables.pkrvars.hcl"
 
-      - name: Configure GCP creds
-        run: |
-          touch gcp-creds.json
-          echo "${{ secrets.GCP_CREDS }}" > gcp-creds.json
+      # - name: Configure GCP creds
+      #   run: |
+      #     touch gcp-creds.json
+      #     echo "${{ secrets.GCP_CREDS }}" > gcp-creds.json
 
       - name: Run `packer validate`
         id: validate
@@ -81,4 +81,4 @@ jobs:
       - name: Run `packer build`
         id: build
         run: |
-          PACKER_LOG=1 packer build -parallel-builds=1 -var "gcp_service_acc_key=${{ secrets.GCP_SECURITY_CREDENTIALS}}" build.pkr.hcl
+          PACKER_LOG=1 packer build -parallel-builds=1 -force -var "gcp_service_acc_key=${{ secrets.GCP_SECURITY_CREDENTIALS}}" build.pkr.hcl
