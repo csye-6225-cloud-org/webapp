@@ -19,7 +19,7 @@ source "googlecompute" "packer-image" {
   ssh_username        = "pkr-gcp-user"
   // credentials_json    = ${var.gcp_service_acc_key}
   // credentials_file = "/Users/anuraag/Documents/work/sem2/cloud/csye-6225-project-dev-8c8171073ad4.json"
-  credentials_file = file("gcp-creds.json")
+  credentials_json = file("gcp-creds.json")
   network          = "default"
   region           = "us-east1"
   zone             = "us-east1-b"
