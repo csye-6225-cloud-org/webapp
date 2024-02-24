@@ -56,10 +56,6 @@ jobs:
         id: setup
         with:
           version: '1.10.1'
-        # run: |
-        #     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-        #     sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-        #     sudo apt-get update && sudo apt-get install packer
 
       - name: Run `packer init`
         id: init
@@ -78,9 +74,9 @@ jobs:
           touch gcp-creds.json
           echo '${{ secrets.GCP_SECURITY_CREDENTIALS }}' > gcp-creds.json
 
-      # - name: Run `packer validate`
-      #   id: validate
-      #   run: "packer validate ."
+      - name: Run `packer validate`
+        id: validate
+        run: "packer validate ."
 
       - name: Run `packer build`
         id: build
