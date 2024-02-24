@@ -18,7 +18,6 @@ source "googlecompute" "packer-image" {
   source_image_family = "centos-stream-8"
   ssh_username        = "pkr-gcp-user"
   // credentials_json    = ${var.gcp_service_acc_key}
-  // credentials_file = "/Users/anuraag/Documents/work/sem2/cloud/csye-6225-project-dev-8c8171073ad4.json"
   credentials_json = file("gcp-creds.json")
   network          = "default"
   region           = "us-east1"
