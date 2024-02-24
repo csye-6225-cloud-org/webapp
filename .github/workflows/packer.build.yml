@@ -89,3 +89,4 @@ jobs:
         # -var "gcp_service_acc_key=${{ secrets.GCP_SECURITY_CREDENTIALS}}"
         env: 
           CI: ""
+          GCP_SECURITY_CREDENTIALS: ${{ secrets.GCP_SECURITY_CREDENTIALS}}
