@@ -76,7 +76,7 @@ jobs:
       - name: Configure GCP creds
         run: |
           touch gcp-creds.json
-          echo ${{ secrets.GCP_SECURITY_CREDENTIALS }} > gcp-creds.json
+          echo '${{ secrets.GCP_SECURITY_CREDENTIALS }}' > gcp-creds.json
 
       # - name: Run `packer validate`
       #   id: validate
