@@ -80,7 +80,7 @@ jobs:
 
       # - name: Run `packer validate`
       #   id: validate
-      #   run: "packer validate ."        
+      #   run: "packer validate ."
 
       - name: Run `packer build`
         id: build
