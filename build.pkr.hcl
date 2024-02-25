@@ -13,7 +13,7 @@ packer {
 }
 
 source "googlecompute" "packer-image" {
-  image_name          = "csye-6225-image-{{timestamp}}"
+  image_name          =   "csye-6225-image-{{timestamp}}"
   project_id          = "csye-6225-project-dev"
   source_image_family = "centos-stream-8"
   ssh_username        = "pkr-gcp-user"
