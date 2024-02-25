@@ -1,4 +1,4 @@
-variable "gcp_service_acc_key" {
+variable "gcp_service_acc_key" 
   type    = string
   default = "${env("GCP_SECURITY_CREDENTIALS")}"
 }
