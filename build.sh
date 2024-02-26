@@ -38,6 +38,4 @@ cd webapp || exit
 echo "Running webapp"
 sudo npm ci
 sudo systemctl daemon-reload
-sudo systemctl start csye6225
 sudo systemctl enable csye6225
-sudo systemctl status csye6225
