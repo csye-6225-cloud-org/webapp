@@ -3,6 +3,36 @@ variable "gcp_service_acc_key" {
   default = "${env("GCP_SECURITY_CREDENTIALS")}"
 }
 
+variable "gcp_project_id" {
+  type    = string
+  default = "csye-6225-project-dev"
+}
+
+variable "source_image_family" {
+  type    = string
+  default = "centos-stream-8"
+}
+
+variable "ssh_username" {
+  type    = string
+  default = "pkr-gcp-user"
+}
+
+variable "gcp_network" {
+  type    = string
+  default = "default"
+}
+
+variable "gcp_region" {
+  type    = string
+  default = "us-east1"
+}
+
+variable "gcp_zone" {
+  type    = string
+  default = "us-east1-b"
+}
+
 packer {
   required_plugins {
     googlecompute = {
@@ -14,14 +44,14 @@ packer {
 
 source "googlecompute" "packer-image" {
   image_name          = "csye-6225-image-{{timestamp}}"
-  project_id          = "csye-6225-project-dev"
-  source_image_family = "centos-stream-8"
-  ssh_username        = "pkr-gcp-user"
+  project_id          = var.gcp_project_id
+  source_image_family = var.source_image_family
+  ssh_username        = var.ssh_username
   // credentials_json    = ${var.gcp_service_acc_key}
   credentials_json = file("gcp-creds.json")
-  network          = "default"
-  region           = "us-east1"
-  zone             = "us-east1-b"
+  network          = var.gcp_network
+  region           = var.gcp_region
+  zone             = var.gcp_zone
 }
 
 build {
@@ -38,9 +68,6 @@ build {
   provisioner "shell" {
     scripts = [
       "./build.sh",
-    ]
-    valid_exit_codes = [
-      0, 3
     ]
   }
 }
