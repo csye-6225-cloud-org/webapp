@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo "Running scriptbuild.sh"
-# yes | sudo yum -y update
-# yes | sudo yum -y upgrade
+yes | sudo yum -y update
+yes | sudo yum -y upgrade
 # sudo setenforce 0
 
 # echo "Installing postgres"
