@@ -39,5 +39,8 @@ build {
     scripts = [
       "./build.sh",
     ]
+    valid_exit_codes = [
+      0, 3
+    ]
   }
 }
