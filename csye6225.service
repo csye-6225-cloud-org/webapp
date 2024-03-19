@@ -7,7 +7,7 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/home/pkr-gcp-user/webapp
-ExecStart=nohup /usr/bin/node /home/pkr-gcp-user/webapp/server.js
+ExecStart=nohup LOG_PATH='/var/log/webapp.log' /usr/bin/node /home/pkr-gcp-user/webapp/server.js
 Restart=always
 RestartSec=5
 StandardOutput=syslog
