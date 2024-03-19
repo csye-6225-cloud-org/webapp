@@ -4,7 +4,8 @@ const fileTransport = pino.transport({
   target: 'pino/file',
   options: { 
     // destination: '/Users/anuraag/Documents/work/sem2/cloud/A06/webapp/webapp.log' 
-    destination: '/var/log/webapp.log'
+    // destination: '/var/log/webapp.log'
+    destination: process.env.LOG_PATH
 },
 });
 
