@@ -1,4 +1,5 @@
 const db = require("../models");
+const logger = require("../utils/logger");
 
 //performing health check by syncing db
 exports.checkdbconnection = async (req, res) => {
@@ -10,14 +11,17 @@ exports.checkdbconnection = async (req, res) => {
     //checking validity of request
     // console.log(req.headers["content-type"]);
     if (checkpayload(req) == true || Object.keys(req.query).length>0){
+        logger.info("Request incorrect: Payload found in healthcheck request");
         res.status(400).end();
     }else{
         try {
             //performing simple connection check with db
             await db.sequelize.authenticate();
+            logger.info("Connection established with DB");
             res.status(200).end();
     
         } catch (error) {
+            logger.info("Could not connect with DB");
             res.status(503).end();
         }
     }
@@ -31,8 +35,10 @@ exports.invalidhealthcheck =  async (req, res) => {
     res.set('X-Content-Type-Options', 'nosniff');
 
     if (checkpayload(req) == true || Object.keys(req.query).length>0){
+        logger.info("Bad Heathcheck Request");
         res.status(400).end();
     }else{
+        logger.info("Healthcheck method not allowed");
         res.status(405).end();
     }
     

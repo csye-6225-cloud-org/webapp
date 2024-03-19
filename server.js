@@ -33,6 +33,7 @@ Bcrypt
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const logger = require("./app/utils/logger");
 
 const app = express();
 app.use(express.json());
@@ -46,10 +47,12 @@ app.disable("etag");
 const db = require("./app/models");
 db.sequelize.sync({ alter: true })
   .then(() => {
-    console.log("postgres db sync successful");
+    console.log("postgres db sync on server start successful");
+    logger.info("Postgres DB synced on server start");
   })
   .catch((err) => {
-    console.log("postgres db sync failed: " + err.message);
+    console.log("postgres db sync on server start failed: " + err.message);
+    logger.info("Postgres DB sync on server start failed: " + err.message);
   });
 
 //importing routes
@@ -60,6 +63,7 @@ require("./app/routes/user.routes")(app);
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log("Server started on port ${PORT}...");
+  logger.info("Server started on port ${PORT}...");
 });
 
 module.exports = app;

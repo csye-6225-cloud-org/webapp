@@ -3,6 +3,8 @@ const User = db.user;
 const bcrypt = require ('bcrypt');
 const workFactor = 8;
 
+const logger = require("../utils/logger");
+
 exports.createuser =  async (req, res) => {
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Content-Type', 'application/json');
@@ -10,6 +12,7 @@ exports.createuser =  async (req, res) => {
 
     if( Object.keys(req.query).length > 0 || req.body.first_name == "" || req.body.first_name == null || req.body.first_name == undefined || req.body.last_name == "" || req.body.last_name == null || req.body.last_name == undefined 
     || req.body.password == "" || req.body.password == null || req.body.password == undefined || req.body.username == "" || req.body.username == null || req.body.username == undefined ){
+        logger.info("Bad request for User Creation");
         res.status(400).end();
         return;
     }
@@ -38,6 +41,7 @@ exports.createuser =  async (req, res) => {
                         account_created: data.account_created,
                         account_updated: data.account_updated
                     }
+                    logger.info("User created: " + dataToSend.username);
                     res.status(201).send(dataToSend);
                 })
                 .catch(err => {
@@ -46,11 +50,13 @@ exports.createuser =  async (req, res) => {
                     res.status(400).send({
                       message: "Error creating User with username: " + user.username + " " +err
                     });
+                    logger.info("User could not be created with username: " + user.username + " " +err);
                 });
             // Some task on success
         },
         (onRejected) => {
             console.log("Error with password hashing: "+ onRejected);
+            logger.error("Error with password hashing: "+ onRejected);
             // Some task on failure
             res.status(400).send({
                 message: onRejected
@@ -96,16 +102,19 @@ exports.getuser =  async (req, res) => {
                 }
                 // console.log("dataToSend: "+ dataToSend.id + dataToSend.username + dataToSend.account_created)
                 res.status(200).send(dataToSend);
+                logger.info("User found with username: "+username);
             } else {
                 res.status(400).send({
                 message: `Cannot find User with id=${username}.`
                 });
+                logger.info(`Cannot find User with id=${username}`);
             }
             })
         .catch(err => {
             res.status(400).send({
                 message: "Error retrieving User with id=" + username +" " + err
             });
+            logger.error("Error retrieving User with id=" + username +" " + err);
         });
 }
 
@@ -121,6 +130,7 @@ exports.updateuser =  async (req, res) => {
         !(req.body.account_updated == "" || req.body.account_updated == null || req.body.account_updated == undefined)
         ){
         res.status(400).send("Unchangeable fields cannot be changed");
+        logger.info("Error updating user: Unchangeable fields cannot be changed")
         return;
     }
 
@@ -158,16 +168,19 @@ exports.updateuser =  async (req, res) => {
                       res.status(400).send({
                         message: `Cannot update User with username= ${username}`
                       });
+                      logger.info("Cannot update User with username: "+ username);
                     }
                   })
                   .catch(err => {
                     res.status(400).send({
                       message: "Error updating User with username=" + username + " "+ err
                     });
+                    logger.info("Error updating User with username=" + username + " "+ err);
                   });
             },
             (onRejected) => {
                 console.log("Error with password hashing: "+ onRejected);
+                logger.error("Error with password hashing: "+ onRejected)
                 // Some task on failure
                 res.status(400).send({
                     message: onRejected
@@ -185,12 +198,14 @@ exports.updateuser =  async (req, res) => {
                   res.status(400).send({
                     message: `Cannot update User with username= ${username}`
                   });
+                  logger.info(`Cannot update User with username: ${username}`);
                 }
               })
               .catch(err => {
                 res.status(400).send({
                   message: "Error updating User with username=" + username + " " + err
                 });
+                logger.info("Error updating User with username=" + username + " " + err);
               });
         }
     }
@@ -204,5 +219,6 @@ exports.passwordEncrypter = async function(password) {
       return hash; 
     } catch (err) {
       console.error(err.message);
+      logger.error("Failed to encrypt password: " + err.message);
     }
   }
