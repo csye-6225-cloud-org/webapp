@@ -33,7 +33,14 @@ sudo mkdir -m755 webapp
 yes | sudo unzip webapp.zip -d webapp
 sudo cp webapp/csye6225.service /etc/systemd/system/csye6225.service
 sudo chown -R csye6225:csye6225 webapp
-cd webapp || exit
+cd webapp || 
+
+echo "Setting up google-cloud-ops-agent"
+sudo curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+sudo bash add-google-cloud-ops-agent-repo.sh --also-install
+sudo cp config.yaml /etc/google-cloud-ops-agent/config.yaml
+sudo touch /var/log/webapp.log
+sudo systemctl restart google-cloud-ops-agent
 
 echo "Running webapp"
 sudo npm ci
