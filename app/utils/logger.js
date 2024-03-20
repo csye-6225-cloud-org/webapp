@@ -5,7 +5,7 @@ const fileTransport = pino.transport({
   options: { 
     // destination: '/Users/anuraag/Documents/work/sem2/cloud/A06/webapp/webapp.log' 
     // destination: '/var/log/webapp.log'
-    destination: process.env.LOG_PATH
+    destination: process.env.LOG_PATH == undefined ? '/var/log/webapp.log' : process.env.LOG_PATH
 },
 });
 
