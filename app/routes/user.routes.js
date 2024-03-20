@@ -23,6 +23,7 @@ module.exports = app => {
     app.use('/v1/user', router);
 
     async function passwordAuthorizer (username, password, cb) {
+        logger.debug("Entered user.routes.passwordAuthorizer");
         User.findByPk(username)
             .then(data => {
                 if (data) {
@@ -55,6 +56,7 @@ module.exports = app => {
 
 
     async function passwordVerifier (username, password) {
+        logger.debug("Entered user.routes.passwordVerifier");
         try{
             //get row based on username
     

@@ -42,6 +42,8 @@ app.use(express.urlencoded({ extended: true }));
 app.disable("etag");
 
 // app.use(basicAuth);
+logger.debug("Entered server.js");
+
 
 //importing db info and syncing db
 const db = require("./app/models");
@@ -52,7 +54,7 @@ db.sequelize.sync({ alter: true })
   })
   .catch((err) => {
     console.log("postgres db sync on server start failed: " + err.message);
-    logger.info("Postgres DB sync on server start failed: " + err.message);
+    logger.warn("Postgres DB sync on server start failed: " + err.message);
   });
 
 //importing routes
