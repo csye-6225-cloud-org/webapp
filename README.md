@@ -15,9 +15,11 @@
 4) In cmd, run "npm run dev"
 
 ## APIs enabled on GCP
-1. Compute Engine API
-2. OS Login API
-3. Service Networking API
+1) Compute Engine API
+2) OS Login API
+3) Service Networking API
+4) Cloud Logging API
+5) Stackdriver Monitoring API
 
 ## Setting up authorization for gcloud
 1) Create a service account for the GCP project
