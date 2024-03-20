@@ -14,7 +14,12 @@ module.exports = pino(
     level: process.env.PINO_LOG_LEVEL || 'debug',
     formatters: {
       level: (label) => {
-        return { level: label.toUpperCase() };
+        if(label == 'warn'){
+          label = 'WARNING';
+        }else{
+          label = label.toUpperCase();
+        }
+        return { level: label }
       }
     },
     timestamp: pino.stdTimeFunctions.isoTime,

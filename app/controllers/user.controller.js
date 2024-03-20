@@ -6,6 +6,7 @@ const workFactor = 8;
 const logger = require("../utils/logger");
 
 exports.createuser =  async (req, res) => {
+    logger.debug("Entered user.controller.createuser");
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Content-Type', 'application/json');
     res.set('X-Content-Type-Options', 'nosniff');
@@ -65,6 +66,7 @@ exports.createuser =  async (req, res) => {
     )}
 
 exports.getuser =  async (req, res) => {
+    logger.debug("Entered user.controller.getuser");
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Content-Type', 'application/json');
     res.set('X-Content-Type-Options', 'nosniff');
@@ -119,6 +121,7 @@ exports.getuser =  async (req, res) => {
 }
 
 exports.updateuser =  async (req, res) => {
+    logger.debug("Entered user.controller.updateuser");
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Content-Type', 'application/json');
     res.set('X-Content-Type-Options', 'nosniff');
@@ -211,6 +214,7 @@ exports.updateuser =  async (req, res) => {
     }
 
 exports.passwordEncrypter = async function(password) {
+    logger.debug("Entered user.controller.passwordEncrypter");
     try {
       const salt = await bcrypt.genSalt(workFactor);
     //   console.log('Salt: ' + salt);

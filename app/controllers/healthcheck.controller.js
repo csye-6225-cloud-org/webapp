@@ -3,7 +3,7 @@ const logger = require("../utils/logger");
 
 //performing health check by syncing db
 exports.checkdbconnection = async (req, res) => {
-
+    logger.debug("Entered heathcheck.controller.checkdbconnection");
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Content-Type', 'application/json');
     res.set('X-Content-Type-Options', 'nosniff');
@@ -21,7 +21,7 @@ exports.checkdbconnection = async (req, res) => {
             res.status(200).end();
     
         } catch (error) {
-            logger.info("Could not connect with DB");
+            logger.warn("Could not connect with DB");
             res.status(503).end();
         }
     }
@@ -30,6 +30,7 @@ exports.checkdbconnection = async (req, res) => {
 
 //invalid routes for health check
 exports.invalidhealthcheck =  async (req, res) => {
+    logger.debug("Entered heathcheck.controller.invalidhealthcheck");
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Content-Type', 'application/json');
     res.set('X-Content-Type-Options', 'nosniff');
