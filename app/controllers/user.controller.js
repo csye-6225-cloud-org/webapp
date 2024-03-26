@@ -1,7 +1,10 @@
+const {PubSub} = require('@google-cloud/pubsub');
+
 const db = require("../models");
 const User = db.user;
 const bcrypt = require ('bcrypt');
 const workFactor = 8;
+const { Op } = require("sequelize");
 
 const logger = require("../utils/logger");
 
@@ -27,7 +30,10 @@ exports.createuser =  async (req, res) => {
                 password: encryptedPassword,
                 username: req.body.username,
                 account_created: new Date(),
-                account_updated: new Date()
+                account_updated: new Date(),
+                validated: false,
+                email_sent: null,
+                email_validation_token: ""
             }
         
             // console.log(user);
@@ -44,6 +50,17 @@ exports.createuser =  async (req, res) => {
                     }
                     logger.info("User created: " + dataToSend.username);
                     res.status(201).send(dataToSend);
+
+                    this.publishToTopic("csye-6225-project-dev", "projects/csye-6225-project-dev/topics/test-topic", data.username)
+                    .then(
+                        (status)=>{
+                            console.log("Published:", status);
+                            logger.info("Published:", status);
+                        }
+                    ).catch(err => {
+                        console.log("Could not publish to topic: "+err);
+                        logger.error("Could not publish to topic: "+err);
+                    })
                 })
                 .catch(err => {
                     //following line throws error when creation fails - problem
@@ -107,9 +124,9 @@ exports.getuser =  async (req, res) => {
                 logger.info("User found with username: "+username);
             } else {
                 res.status(400).send({
-                message: `Cannot find User with id=${username}.`
+                message: "Cannot find User with id: "+username
                 });
-                logger.info(`Cannot find User with id=${username}`);
+                logger.info("Cannot find User with id: "+username);
             }
             })
         .catch(err => {
@@ -169,16 +186,16 @@ exports.updateuser =  async (req, res) => {
                         res.status(204).end();
                     } else {
                       res.status(400).send({
-                        message: `Cannot update User with username= ${username}`
+                        message: "Cannot update User with username: "+ username
                       });
                       logger.info("Cannot update User with username: "+ username);
                     }
                   })
                   .catch(err => {
                     res.status(400).send({
-                      message: "Error updating User with username=" + username + " "+ err
+                      message: "Error updating User with username:" + username + " "+ err
                     });
-                    logger.info("Error updating User with username=" + username + " "+ err);
+                    logger.info("Error updating User with username:" + username + " "+ err);
                   });
             },
             (onRejected) => {
@@ -197,11 +214,12 @@ exports.updateuser =  async (req, res) => {
             .then(num => {
                 if (num == 1) {
                     res.status(204).end();
+                    logger.info("Updated User with username: "+ username);
                 } else {
                   res.status(400).send({
-                    message: `Cannot update User with username= ${username}`
+                    message: "Cannot update User with username: "+ username
                   });
-                  logger.info(`Cannot update User with username: ${username}`);
+                  logger.info("Cannot update User with username: "+ username);
                 }
               })
               .catch(err => {
@@ -211,6 +229,55 @@ exports.updateuser =  async (req, res) => {
                 logger.info("Error updating User with username=" + username + " " + err);
               });
         }
+    }
+
+exports.validateuser =  async (req, res) => {
+    logger.debug("Entered user.controller.validateuser");
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Content-Type', 'application/json');
+    res.set('X-Content-Type-Options', 'nosniff');
+
+    if( Object.keys(req.query).length != 2 || 
+    (req.query.username == "" || req.query.username == null || req.query.username == undefined) ||
+    (req.query.email_validation_token == "" || req.query.email_validation_token == null || req.query.email_validation_token == undefined)){
+        console.log(req.query);
+        console.log(Object.keys(req.query).length);
+        console.log("Error validating user: Must provide username and email validation token:", req.query.username, req.query.email_validation_token)
+        res.status(400).send({"message": "Error validating user: Must provide username and email validation token"});
+        logger.info("Error validating user: Must provide username and email validation token")
+        return;
+    }
+
+    console.log("Validating username and token:", req.query.username, req.query.email_validation_token)
+    valuestoupdate = {validated: true};
+
+    // console.log(new Date());
+    User.update(valuestoupdate, {
+        where: {
+            username: req.query.username, 
+            email_validation_token: req.query.email_validation_token,
+            email_sent: {
+                [Op.gt]: new Date(new Date() - 2 * 60 * 1000)
+            }
+        }
+    })
+    .then(num => {
+        if (num == 1) {
+            res.status(200).send({message: "User validated, you may log in now"});
+            logger.info("Validated user account for: "+req.query.username)
+        } else {
+            res.status(400).send({
+            message: "Cannot validate User with username: "+req.query.username
+            });
+            logger.info("Cannot validate User with username: "+req.query.username);
+        }
+        })
+        .catch(err => {
+        res.status(400).send({
+            message: "Error validating User with username=" + req.query.username + " " + err
+        });
+        logger.info("Error validating User with username=" + req.query.username + " " + err);
+        });
     }
 
 exports.passwordEncrypter = async function(password) {
@@ -224,5 +291,34 @@ exports.passwordEncrypter = async function(password) {
     } catch (err) {
       console.error(err.message);
       logger.error("Failed to encrypt password: " + err.message);
+    }
+  }
+
+  exports.publishToTopic = async function(projectName, topicName, username) {
+    logger.debug("Entered user.controller.publishToTopic");
+    try {
+        // Initiate Pub/Sub topic message push
+        console.log("Project, topic, username: ", projectName, topicName, username);
+        
+        const pubSubClient = new PubSub({projectName});
+
+        // Lists all topics in the current project
+        const [topics] = await pubSubClient.getTopics();
+        topics.forEach(topic => {
+            // console.log(topic);
+            if(topic.name == topicName){
+                json = {
+                    "username": username
+                }
+                console.log("Publishing json to topic:", json, topicName);
+                topic.publishMessage({data: Buffer.from(JSON.stringify(json))});
+            }
+        });
+        return true
+
+    } catch (err) {
+      console.error(err.message);
+      logger.error("Failed to publish: " + err.message);
+      return false
     }
   }

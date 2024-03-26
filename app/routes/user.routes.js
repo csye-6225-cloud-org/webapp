@@ -19,6 +19,8 @@ module.exports = app => {
 
     router.post("/", user.createuser);
 
+    router.get("/validate", user.validateuser);
+
     //base route
     app.use('/v1/user', router);
 
@@ -27,18 +29,34 @@ module.exports = app => {
         User.findByPk(username)
             .then(data => {
                 if (data) {
+                    validated = data.validated;
                     hash = data.password;
                     console.log("Hash found: " + hash);
+                    console.log("Password validated: " + validated);
                     bcrypt.compare(password, hash, function(err, result) {
-                        if (result) {
-                            console.log("Password verified");
-                            logger.info("Password verified");
-                            return cb(null, true);
-                        }
-                        else {
-                            console.log("Password incorrect");
-                            logger.info("Password incorrect");
-                            return cb(null, false);
+                        //adding exception case for test env as email validation flow is not possible
+                        if(process.env.ENVI == "TEST"){
+                            if (result) {
+                                console.log("Password verified");
+                                logger.info("Password verified");
+                                return cb(null, true);
+                            }
+                            else {
+                                console.log("Password incorrect or email not validated");
+                                logger.info("Password incorrect or email not validated");
+                                return cb(null, false);
+                            }
+                        }else{
+                            if (result && validated) {
+                                console.log("Password verified");
+                                logger.info("Password verified");
+                                return cb(null, true);
+                            }
+                            else {
+                                console.log("Password incorrect or email not validated");
+                                logger.info("Password incorrect or email not validated");
+                                return cb(null, false);
+                            }
                         }
                     })
                 } else{
@@ -87,8 +105,8 @@ module.exports = app => {
             }
 
         }catch(err){
-            console.log("error while verfying pwd " + err);
-            logger.error("error while verfying password " + err);
+            console.log("error while verifying pwd " + err);
+            logger.error("error while verifying password " + err);
             return false;
         }
       }

@@ -42,4 +42,4 @@ jobs:
 
       - run: npm ci
       - run: touch webapp.log
-      - run: LOG_PATH='webapp.log' npm test
+      - run: ENVI='TEST' LOG_PATH='webapp.log' npm test
