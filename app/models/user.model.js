@@ -1,5 +1,6 @@
 const DataTypes = require('sequelize').DataTypes;
 const bcrypt = require("bcrypt");
+const { BOOLEAN } = require('sequelize');
 
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("User", {
@@ -28,18 +29,16 @@ module.exports = (sequelize, Sequelize) => {
       },
       account_updated: {
         type: Sequelize.DATE
+      },
+      validated: {
+        type: Sequelize.BOOLEAN
+      },
+      email_sent: {
+        type: Sequelize.DATE
+      },
+      email_validation_token: {
+        type: Sequelize.STRING
       }
-    // }, 
-    // {
-    //   freezeTableName: true,
-    //   instanceMethods: {
-    //       generateHash(password) {
-    //           return bcrypt.hash(password, bcrypt.genSaltSync(8));
-    //       },
-    //       validPassword(password) {
-    //           return bcrypt.compare(password, this.password);
-    //       }
-    //   }
   });
   
     return User;
