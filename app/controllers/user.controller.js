@@ -51,7 +51,7 @@ exports.createuser =  async (req, res) => {
                     logger.info("User created: " + dataToSend.username);
                     res.status(201).send(dataToSend);
 
-                    this.publishToTopic("csye-6225-project-dev", "projects/csye-6225-project-dev/topics/test-topic", data.username)
+                    this.publishToTopic("csye-6225-project-dev", "projects/csye-6225-project-dev/topics/verify_email", data.username)
                     .then(
                         (status)=>{
                             console.log("Published:", status);
@@ -294,7 +294,7 @@ exports.passwordEncrypter = async function(password) {
     }
   }
 
-  exports.publishToTopic = async function(projectName, topicName, username) {
+exports.publishToTopic = async function(projectName, topicName, username) {
     logger.debug("Entered user.controller.publishToTopic");
     try {
         // Initiate Pub/Sub topic message push
@@ -321,4 +321,4 @@ exports.passwordEncrypter = async function(password) {
       logger.error("Failed to publish: " + err.message);
       return false
     }
-  }
+}
