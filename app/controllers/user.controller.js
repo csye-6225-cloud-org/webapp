@@ -1,4 +1,5 @@
 const {PubSub} = require('@google-cloud/pubsub');
+const gcpConfig = require("../config/gcp.config.json");
 
 const db = require("../models");
 const User = db.user;
@@ -51,7 +52,8 @@ exports.createuser =  async (req, res) => {
                     logger.info("User created: " + dataToSend.username);
                     res.status(201).send(dataToSend);
 
-                    this.publishToTopic("csye-6225-project-dev", "projects/csye-6225-project-dev/topics/verify_email", data.username)
+                    var topicString = "projects/" + gcpConfig.project + "/topics/" + gcpConfig.topic;
+                    this.publishToTopic(gcpConfig.project, topicString, data.username)
                     .then(
                         (status)=>{
                             console.log("Published:", status);
