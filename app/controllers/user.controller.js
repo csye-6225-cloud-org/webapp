@@ -121,9 +121,13 @@ exports.getuser =  async (req, res) => {
                     account_created: data.account_created,
                     account_updated: data.account_updated
                 }
-                // console.log("dataToSend: "+ dataToSend.id + dataToSend.username + dataToSend.account_created)
-                res.status(200).send(dataToSend);
-                logger.info("User found with username: "+username);
+                if(data.validated == true || process.env.ENVI == "TEST"){
+                    // console.log("dataToSend: "+ dataToSend.id + dataToSend.username + dataToSend.account_created)
+                    res.status(200).send(dataToSend);
+                    logger.info("User found with username: "+username);
+                }else{
+                    res.status(403).end();
+                }
             } else {
                 res.status(400).send({
                 message: "Cannot find User with id: "+username
@@ -145,92 +149,115 @@ exports.updateuser =  async (req, res) => {
     res.set('Content-Type', 'application/json');
     res.set('X-Content-Type-Options', 'nosniff');
 
-    if( Object.keys(req.query).length > 0 || 
-        !(req.body.username == "" || req.body.username == null || req.body.username == undefined) ||
-        !(req.body.id == "" || req.body.id == null || req.body.id == undefined) ||
-        !(req.body.account_created == "" || req.body.account_created == null || req.body.account_created == undefined) ||
-        !(req.body.account_updated == "" || req.body.account_updated == null || req.body.account_updated == undefined)
-        ){
-        res.status(400).send("Unchangeable fields cannot be changed");
-        logger.info("Error updating user: Unchangeable fields cannot be changed")
-        return;
-    }
-
     // parse login and password from headers
     const b64auth = (req.headers.authorization || '').split(' ')[1] || ''
     const [username, password] = Buffer.from(b64auth, 'base64').toString().split(':')
 
-    valuestoupdate = {};
-
-    //need to test out with empty obj/first_name to see if value is "" or null or undefined  - done
-    if(req.body.first_name != "" && req.body.first_name != null && req.body.first_name != undefined){
-        valuestoupdate.first_name = req.body.first_name;
-    }
-    if(req.body.last_name != "" && req.body.last_name != null && req.body.last_name != undefined){
-        valuestoupdate.last_name = req.body.last_name;
-    }
-    if(req.body.password != "" && req.body.password != null && req.body.password != undefined){
-        valuestoupdate.password = req.body.password;
-        this.passwordEncrypter(valuestoupdate.password).then(
-            (encryptedPassword) => {
-                // console.log(encryptedPassword)
-
-                valuestoupdate.password = encryptedPassword;
-                valuestoupdate.account_updated = new Date();
-            
-                // console.log(user);
-            
-                User.update(valuestoupdate, {
-                    where: {username: username}
-                })
-                .then(num => {
-                    if (num == 1) {
-                        res.status(204).end();
-                    } else {
-                      res.status(400).send({
-                        message: "Cannot update User with username: "+ username
-                      });
-                      logger.info("Cannot update User with username: "+ username);
+    User.findByPk(username)
+        .then(data => {
+            if (data) {
+                if(data.validated == true || process.env.ENVI == "TEST"){
+                    //update user here
+                    if( Object.keys(req.query).length > 0 || 
+                        !(req.body.username == "" || req.body.username == null || req.body.username == undefined) ||
+                        !(req.body.id == "" || req.body.id == null || req.body.id == undefined) ||
+                        !(req.body.account_created == "" || req.body.account_created == null || req.body.account_created == undefined) ||
+                        !(req.body.account_updated == "" || req.body.account_updated == null || req.body.account_updated == undefined)
+                        ){
+                        res.status(400).send("Unchangeable fields cannot be changed");
+                        logger.info("Error updating user: Unchangeable fields cannot be changed")
+                        return;
                     }
-                  })
-                  .catch(err => {
-                    res.status(400).send({
-                      message: "Error updating User with username:" + username + " "+ err
-                    });
-                    logger.info("Error updating User with username:" + username + " "+ err);
-                  });
-            },
-            (onRejected) => {
-                console.log("Error with password hashing: "+ onRejected);
-                logger.error("Error with password hashing: "+ onRejected)
-                // Some task on failure
-                res.status(400).send({
-                    message: onRejected
-                });
-            }
-        )}else{
-            //password doesn't need to be updated
-            User.update(valuestoupdate, {
-                where: {username: username}
-            })
-            .then(num => {
-                if (num == 1) {
-                    res.status(204).end();
-                    logger.info("Updated User with username: "+ username);
-                } else {
-                  res.status(400).send({
-                    message: "Cannot update User with username: "+ username
-                  });
-                  logger.info("Cannot update User with username: "+ username);
+
+                    valuestoupdate = {};
+                    //need to test out with empty obj/first_name to see if value is "" or null or undefined  - done
+                    if(req.body.first_name != "" && req.body.first_name != null && req.body.first_name != undefined){
+                        valuestoupdate.first_name = req.body.first_name;
+                    }
+                    if(req.body.last_name != "" && req.body.last_name != null && req.body.last_name != undefined){
+                        valuestoupdate.last_name = req.body.last_name;
+                    }
+                    if(req.body.password != "" && req.body.password != null && req.body.password != undefined){
+                        valuestoupdate.password = req.body.password;
+                        this.passwordEncrypter(valuestoupdate.password).then(
+                            (encryptedPassword) => {
+                                // console.log(encryptedPassword)
+
+                                valuestoupdate.password = encryptedPassword;
+                                valuestoupdate.account_updated = new Date();
+                            
+                                // console.log(user);
+                            
+                                User.update(valuestoupdate, {
+                                    where: {username: username}
+                                })
+                                .then(num => {
+                                    if (num == 1) {
+                                        res.status(204).end();
+                                    } else {
+                                    res.status(400).send({
+                                        message: "Cannot update User with username: "+ username
+                                    });
+                                    logger.info("Cannot update User with username: "+ username);
+                                    }
+                                })
+                                .catch(err => {
+                                    res.status(400).send({
+                                    message: "Error updating User with username:" + username + " "+ err
+                                    });
+                                    logger.info("Error updating User with username:" + username + " "+ err);
+                                });
+                            },
+                            (onRejected) => {
+                                console.log("Error with password hashing: "+ onRejected);
+                                logger.error("Error with password hashing: "+ onRejected)
+                                // Some task on failure
+                                res.status(400).send({
+                                    message: onRejected
+                                });
+                            }
+                        )}else{
+                            //password doesn't need to be updated
+                            User.update(valuestoupdate, {
+                                where: {username: username}
+                            })
+                            .then(num => {
+                                if (num == 1) {
+                                    res.status(204).end();
+                                    logger.info("Updated User with username: "+ username);
+                                } else {
+                                res.status(400).send({
+                                    message: "Cannot update User with username: "+ username
+                                });
+                                logger.info("Cannot update User with username: "+ username);
+                                }
+                            })
+                            .catch(err => {
+                                res.status(400).send({
+                                message: "Error updating User with username=" + username + " " + err
+                                });
+                                logger.info("Error updating User with username=" + username + " " + err);
+                            });
+                        }
+
+                }else{
+                    res.status(403).end();
                 }
-              })
-              .catch(err => {
+            } else {
                 res.status(400).send({
-                  message: "Error updating User with username=" + username + " " + err
+                message: "Cannot find User with id: "+username
                 });
-                logger.info("Error updating User with username=" + username + " " + err);
-              });
-        }
+                logger.info("Cannot find User with id: "+username);
+            }
+            })
+        .catch(err => {
+            res.status(400).send({
+                message: "Error retrieving User with id=" + username +" " + err
+            });
+            logger.error("Error retrieving User with id=" + username +" " + err);
+        });
+
+    
     }
 
 exports.validateuser =  async (req, res) => {

@@ -35,28 +35,15 @@ module.exports = app => {
                     console.log("Password validated: " + validated);
                     bcrypt.compare(password, hash, function(err, result) {
                         //adding exception case for test env as email validation flow is not possible
-                        if(process.env.ENVI == "TEST"){
-                            if (result) {
-                                console.log("Password verified");
-                                logger.info("Password verified");
-                                return cb(null, true);
-                            }
-                            else {
-                                console.log("Password incorrect or email not validated");
-                                logger.info("Password incorrect or email not validated");
-                                return cb(null, false);
-                            }
-                        }else{
-                            if (result && validated) {
-                                console.log("Password verified");
-                                logger.info("Password verified");
-                                return cb(null, true);
-                            }
-                            else {
-                                console.log("Password incorrect or email not validated");
-                                logger.info("Password incorrect or email not validated");
-                                return cb(null, false);
-                            }
+                        if (result) {
+                            console.log("Password verified");
+                            logger.info("Password verified");
+                            return cb(null, true);
+                        }
+                        else {
+                            console.log("Password incorrect or email not validated");
+                            logger.info("Password incorrect or email not validated");
+                            return cb(null, false);
                         }
                     })
                 } else{
