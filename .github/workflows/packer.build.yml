@@ -111,6 +111,7 @@ jobs:
           cat metadata.sh
           CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=$GOOGLE_APPLICATION_CREDENTIALS \
           gcloud compute instance-templates create webapp-template-cd \
+          --project=csye-6225-project-dev \
           --region=us-east1 \
           --instance-template-region=us-east1 \
           --description="This template is used to create webapp instance" \
