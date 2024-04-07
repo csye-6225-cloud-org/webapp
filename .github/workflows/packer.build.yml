@@ -95,10 +95,10 @@ jobs:
 
       - name: Edit startup script
         run: |
-          sed -i "s/DBHOSTTOREPLACE/${{secrets.DBHOST}}/" metadata.sh
-          sed -i "s/DBPASSTOREPLACE/${{secrets.DBPASS}}/" metadata.sh
-          sed -i "s/DBUSERTOREPLACE/${{secrets.DBUSER}}/" metadata.sh
-          sed -i "s/DBDBTOREPLACE/${{secrets.DBDB}}/" metadata.sh
+          sed -i "s/DBHOSTTOREPLACE/${{ secrets.DBHOST }}/" metadata.sh
+          sed -i "s/DBPASSTOREPLACE/${{ secrets.DBPASS }}/" metadata.sh
+          sed -i "s/DBUSERTOREPLACE/${{ secrets.DBUSER }}/" metadata.sh
+          sed -i "s/DBDBTOREPLACE/${{ secrets.DBDB }}/" metadata.sh
         
       - name: Create instance template using image
         run: |
