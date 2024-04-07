@@ -2,6 +2,7 @@
 *.zip
 
 gcp-creds.json
+manifest.json
 
 # Mac specific files
 .DS_Store
