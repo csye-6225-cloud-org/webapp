@@ -87,3 +87,30 @@ jobs:
         env: 
           CI: ""
           GCP_SECURITY_CREDENTIALS: ${{ secrets.GCP_SECURITY_CREDENTIALS}}
+      
+      - name: Get image name from manifest.json
+        run: |
+          echo "IMAGE_NAME=$(cat manifest.json | jq -r '.builds[0].artifact_id')" >> $GITHUB_ENV
+
+      - name: Edit startup script
+        run: |
+          sed -i "s/DBHOSTTOREPLACE/${{secrets.DBHOST}}/" metadata.sh
+          sed -i "s/DBPASSTOREPLACE/${{secrets.DBPASS}}/" metadata.sh
+          sed -i "s/DBUSERTOREPLACE/${{secrets.DBUSER}}/" metadata.sh
+          sed -i "s/DBDBTOREPLACE/${{secrets.DBDB}}/" metadata.sh
+        
+      - name: Create instance template using image
+        run: |
+          echo $IMAGE_NAME
+          cat metadata
+          gcloud compute instance-templates create webapp-template-cd \
+          --region=us-east1 \
+          --instance-template-region=us-east1 \
+          --description="This template is used to create webapp instance" \
+          --machine-type=e2-medium \
+          --create-disk image=$IMAGE_NAME,image-project=csye-6225-project-dev,size=100GB,type=pd-balanced,boot=yes,auto-delete=yes,kms-key=projects/csye-6225-project-dev/locations/us-east1/keyRings/test-key-ring/cryptoKeys/test-key \
+          --metadata-from-file=metadata \
+          --network-interface network=tf-network-1,subnet=webapp-subnet-1,no-address \
+          --tags=webapp-server \
+          --service-account=tf-service-account@csye-6225-project-dev.iam.gserviceaccount.com \
+          --scopes=https://www.googleapis.com/auth/logging.admin,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/pubsub
