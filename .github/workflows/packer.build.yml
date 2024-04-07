@@ -109,7 +109,7 @@ jobs:
           --description="This template is used to create webapp instance" \
           --machine-type=e2-medium \
           --create-disk image=$IMAGE_NAME,image-project=csye-6225-project-dev,size=100GB,type=pd-balanced,boot=yes,auto-delete=yes,kms-key=projects/csye-6225-project-dev/locations/us-east1/keyRings/test-key-ring/cryptoKeys/test-key \
-          --metadata-from-file=metadata.sh \
+          --metadata-from-file startup-script=metadata.sh \
           --network-interface network=tf-network-1,subnet=webapp-subnet-1,no-address \
           --tags=webapp-server \
           --service-account=tf-service-account@csye-6225-project-dev.iam.gserviceaccount.com \
