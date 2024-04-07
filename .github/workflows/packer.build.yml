@@ -15,10 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_SECURITY_CREDENTIALS }}'
+      - name: Configure GCP ADC creds
+        run: |
+          touch gcp-adc-creds.json
+          echo '${{ secrets.GCP_SECURITY_CREDENTIALS }}' > gcp-adc-creds.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=gcp-adc-creds.json" >> $GITHUB_ENV
+
+      # - id: 'auth'
+      #   uses: 'google-github-actions/auth@v2'
+      #   with:
+      #     credentials_json: '${{ secrets.GCP_SECURITY_CREDENTIALS }}'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
@@ -114,3 +120,7 @@ jobs:
           --tags=webapp-server \
           --service-account=tf-service-account@csye-6225-project-dev.iam.gserviceaccount.com \
           --scopes=https://www.googleapis.com/auth/logging.admin,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/pubsub
+
+      # - name: Configure managed instance group to use new template
+      #   run: |
+          
