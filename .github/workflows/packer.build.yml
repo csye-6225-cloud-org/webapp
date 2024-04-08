@@ -94,9 +94,10 @@ jobs:
           CI: ""
           GCP_SECURITY_CREDENTIALS: ${{ secrets.GCP_SECURITY_CREDENTIALS}}
       
-      - name: Get image name from manifest.json
+      - name: Get image name from manifest.json and set epoch timestamp
         run: |
           echo "IMAGE_NAME=$(cat manifest.json | jq -r '.builds[0].artifact_id')" >> $GITHUB_ENV
+          echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
 
       - name: Edit startup script
         run: |
@@ -109,7 +110,7 @@ jobs:
         run: |
           echo $IMAGE_NAME
           cat metadata.sh
-          gcloud compute instance-templates create webapp-template-cd \
+          gcloud compute instance-templates create webapp-template-cd-$TIMESTAMP \
           --project=csye-6225-project-dev \
           --region=us-east1 \
           --instance-template-region=us-east1 \
@@ -126,7 +127,7 @@ jobs:
         run: |
           gcloud compute instance-groups managed rolling-action start-update webapp-igm  \
           --region=us-east1 \
-          --version="template=projects/csye-6225-project-dev/regions/us-east1/instanceTemplates/webapp-template-cd" \
+          --version="template=projects/csye-6225-project-dev/regions/us-east1/instanceTemplates/webapp-template-cd-$TIMESTAMP" \
           --type="proactive" \
           --max-surge=0 \
           --max-unavailable=3 \
@@ -140,4 +141,4 @@ jobs:
           --region=us-east1
 
         # gcloud compute instance-groups managed describe webapp-igm \
-        # --region=us-east1
+        # --region=us-east1 
