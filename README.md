@@ -34,3 +34,8 @@
 3) Run zip -r webapp.zip ./
 4) Run packer validate .
 5) Run packer build .
+
+## Roles for dev-service-account-
+1) Compute Instance Admin (v1)
+2) Compute Load Balancer Admin
+3) Service Account User
