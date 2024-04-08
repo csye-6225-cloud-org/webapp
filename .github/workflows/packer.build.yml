@@ -15,16 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure GCP ADC creds
-        run: |
-          touch gcp-adc-creds.json
-          echo '${{ secrets.GCP_SECURITY_CREDENTIALS }}' > gcp-adc-creds.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=gcp-adc-creds.json" >> $GITHUB_ENV
+      # - name: Configure GCP ADC creds
+      #   run: |
+      #     touch gcp-adc-creds.json
+      #     echo '${{ secrets.GCP_SECURITY_CREDENTIALS }}' > gcp-adc-creds.json
+      #     echo "GOOGLE_APPLICATION_CREDENTIALS=gcp-adc-creds.json" >> $GITHUB_ENV
 
-      # - id: 'auth'
-      #   uses: 'google-github-actions/auth@v2'
-      #   with:
-      #     credentials_json: '${{ secrets.GCP_SECURITY_CREDENTIALS }}'
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SVC_ACC_CREDS }}'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
@@ -109,7 +109,6 @@ jobs:
         run: |
           echo $IMAGE_NAME
           cat metadata.sh
-          CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=$GOOGLE_APPLICATION_CREDENTIALS \
           gcloud compute instance-templates create webapp-template-cd \
           --project=csye-6225-project-dev \
           --region=us-east1 \
