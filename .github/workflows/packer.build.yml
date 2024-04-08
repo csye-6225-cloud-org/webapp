@@ -129,8 +129,8 @@ jobs:
           --region=us-east1 \
           --version="template=projects/csye-6225-project-dev/regions/us-east1/instanceTemplates/webapp-template-cd-$TIMESTAMP" \
           --type="proactive" \
-          --max-surge=0 \
-          --max-unavailable=3 \
+          --max-surge=3 \
+          --max-unavailable=0 \
           --minimal-action=replace \
           --replacement-method=substitute
 
