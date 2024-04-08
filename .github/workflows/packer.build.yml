@@ -136,9 +136,8 @@ jobs:
 
       - name: Verify that changes have successfully propogated
         run: |
+          set +e
           gcloud compute instance-groups managed wait-until webapp-igm \
           --version-target-reached \
-          --region=us-east1 
-
-        # gcloud compute instance-groups managed describe webapp-igm \
-        # --region=us-east1 
+          --region=us-east1
+          echo "exitcode=$?" >> $GITHUB_OUTPUT
