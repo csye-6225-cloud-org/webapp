@@ -20,6 +20,7 @@
 3) Service Networking API
 4) Cloud Logging API
 5) Stackdriver Monitoring API
+6) Key Management Service API
 
 ## Setting up authorization for gcloud
 1) Create a service account for the GCP project
