@@ -128,8 +128,8 @@ jobs:
           --region=${{ secrets.GCP_REGION }} \
           --version="template=projects/${{ secrets.GCP_PROJECT }}/regions/${{ secrets.GCP_REGION }}/instanceTemplates/webapp-template-cd-$TIMESTAMP" \
           --type="proactive" \
-          --max-surge=${{ env.GCP_IGM_SURGE }} \
-          --max-unavailable=${{ env.GCP_IGM_UNAVAILABLE }} \
+          --max-surge=${{ vars.GCP_IGM_SURGE }} \
+          --max-unavailable=${{ vars.GCP_IGM_UNAVAILABLE }} \
           --minimal-action=replace \
           --replacement-method=substitute
 
