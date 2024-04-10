@@ -47,7 +47,6 @@ source "googlecompute" "packer-image" {
   project_id          = var.gcp_project_id
   source_image_family = var.source_image_family
   ssh_username        = var.ssh_username
-  // credentials_json    = ${var.gcp_service_acc_key}
   credentials_json = file("gcp-creds.json")
   network          = var.gcp_network
   region           = var.gcp_region
@@ -73,8 +72,5 @@ build {
   post-processor "manifest" {
     output     = "manifest.json"
     strip_path = true
-    custom_data = {
-      my_custom_data = "example"
-    }
   }
 }
