@@ -64,6 +64,9 @@ jobs:
         with:
           version: '1.10.1'
 
+      - name: Cleanup node modules
+        run: "rm -r node_modules/"
+
       - name: Run 'packer init'
         id: init
         run: "packer init ."
