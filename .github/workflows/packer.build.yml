@@ -89,7 +89,6 @@ jobs:
         id: build
         run: |
           PACKER_LOG=1 packer build -parallel-builds=1 -force build.pkr.hcl
-        # -var "gcp_service_acc_key=${{ secrets.GCP_SECURITY_CREDENTIALS}}"
         env: 
           CI: ""
           GCP_SECURITY_CREDENTIALS: ${{ secrets.GCP_SECURITY_CREDENTIALS}}
@@ -111,33 +110,37 @@ jobs:
           echo $IMAGE_NAME
           cat metadata.sh
           gcloud compute instance-templates create webapp-template-cd-$TIMESTAMP \
-          --project=csye-6225-project-dev \
-          --region=us-east1 \
-          --instance-template-region=us-east1 \
-          --description="This template is used to create webapp instance" \
+          --project=${{ secrets.GCP_PROJECT }} \
+          --region=${{ secrets.GCP_REGION }} \
+          --instance-template-region=${{ secrets.GCP_REGION }} \
+          --description="This template is used to create webapp instance- continuous delivery version" \
           --machine-type=e2-medium \
-          --create-disk image=$IMAGE_NAME,image-project=csye-6225-project-dev,size=100GB,type=pd-balanced,boot=yes,auto-delete=yes,kms-key=${{ secrets.KMS_KEY }} \
+          --create-disk image=$IMAGE_NAME,image-project=${{ secrets.GCP_PROJECT }},size=100GB,type=pd-balanced,boot=yes,auto-delete=yes,kms-key=${{ secrets.KMS_KEY }} \
           --metadata-from-file startup-script=metadata.sh \
-          --network-interface network=tf-network-1,subnet=webapp-subnet-1,no-address \
+          --network-interface network=${{ secrets.GCP_NET_NAME }},subnet=${{ secrets.GCP_SUBNET_NAME }},no-address \
           --tags=webapp-server \
-          --service-account=tf-service-account@csye-6225-project-dev.iam.gserviceaccount.com \
+          --service-account=${{ secrets.GCP_SVC_ACC_EMAIL }} \
           --scopes=https://www.googleapis.com/auth/logging.admin,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/pubsub
 
       - name: Configure managed instance group to use new template
         run: |
-          gcloud compute instance-groups managed rolling-action start-update webapp-igm  \
-          --region=us-east1 \
-          --version="template=projects/csye-6225-project-dev/regions/us-east1/instanceTemplates/webapp-template-cd-$TIMESTAMP" \
+          gcloud compute instance-groups managed rolling-action start-update ${{ secrets.GCP_IGM_NAME }}  \
+          --region=${{ secrets.GCP_REGION }} \
+          --version="template=projects/${{ secrets.GCP_PROJECT }}/regions/${{ secrets.GCP_REGION }}/instanceTemplates/webapp-template-cd-$TIMESTAMP" \
           --type="proactive" \
-          --max-surge=3 \
-          --max-unavailable=0 \
+          --max-surge=${{ env.GCP_IGM_SURGE }} \
+          --max-unavailable=${{ env.GCP_IGM_UNAVAILABLE }} \
           --minimal-action=replace \
           --replacement-method=substitute
 
       - name: Verify that changes have successfully propogated
         run: |
-          set +e
-          gcloud compute instance-groups managed wait-until webapp-igm \
+          set -e
+          gcloud compute instance-groups managed wait-until ${{ secrets.GCP_IGM_NAME }} \
           --version-target-reached \
-          --region=us-east1
-          echo "exitcode=$?" >> $GITHUB_OUTPUT
+          --region=${{ secrets.GCP_REGION }}
+          echo "CI/CD WORKFLOW COMPLETED"
+          echo $?
+          (exit 4)
+          echo "Testing to see if exit code 3 interrupts workflow"
+          
