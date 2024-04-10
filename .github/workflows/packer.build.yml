@@ -58,21 +58,21 @@ jobs:
       - run: touch webapp.log
       - run: ENVI='TEST' LOG_PATH='webapp.log' npm test
 
-      - name: Setup `packer`
+      - name: Setup packer
         uses: hashicorp/setup-packer@main
         id: setup
         with:
           version: '1.10.1'
 
-      - name: Run `packer init`
+      - name: Run 'packer init'
         id: init
         run: "packer init ."
 
-      - name: Run `packer fmt`
+      - name: Run 'packer fmt'
         id: fmt
         run: "packer fmt ."
 
-      - name: Run `zip`
+      - name: Run 'zip'
         id: zip
         run: "zip -r webapp.zip ./"
 
@@ -81,11 +81,11 @@ jobs:
           touch gcp-creds.json
           echo '${{ secrets.GCP_SVC_ACC_CREDS }}' > gcp-creds.json
 
-      - name: Run `packer validate`
+      - name: Run 'packer validate'
         id: validate
         run: "packer validate ."
 
-      - name: Run `packer build`
+      - name: Run 'packer build'
         id: build
         run: |
           PACKER_LOG=1 packer build -parallel-builds=1 -force build.pkr.hcl
@@ -140,7 +140,4 @@ jobs:
           --version-target-reached \
           --region=${{ secrets.GCP_REGION }}
           echo "CI/CD WORKFLOW COMPLETED"
-        # echo $?
-        # (exit 4)
-        # echo "Testing to see if exit code 4 interrupts workflow- update: it does"
           
