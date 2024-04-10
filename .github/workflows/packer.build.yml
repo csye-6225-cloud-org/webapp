@@ -140,7 +140,7 @@ jobs:
           --version-target-reached \
           --region=${{ secrets.GCP_REGION }}
           echo "CI/CD WORKFLOW COMPLETED"
-          echo $?
-          (exit 4)
-          echo "Testing to see if exit code 3 interrupts workflow"
+        # echo $?
+        # (exit 4)
+        # echo "Testing to see if exit code 4 interrupts workflow- update: it does"
           
