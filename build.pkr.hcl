@@ -47,10 +47,10 @@ source "googlecompute" "packer-image" {
   project_id          = var.gcp_project_id
   source_image_family = var.source_image_family
   ssh_username        = var.ssh_username
-  credentials_json = file("gcp-creds.json")
-  network          = var.gcp_network
-  region           = var.gcp_region
-  zone             = var.gcp_zone
+  credentials_json    = file("gcp-creds.json")
+  network             = var.gcp_network
+  region              = var.gcp_region
+  zone                = var.gcp_zone
 }
 
 build {
