@@ -109,8 +109,8 @@ describe('A01- delete healthz route with json payload', () => {
 describe('A03- Create an account', () => {
   it('should validate that account exists using the GET call', async () => { 
 
-    // Make a post request to the /v1/user endpoint to create new user
-    const res = await request(app).post('/v1/user').send({
+    // Make a post request to the /v2/user endpoint to create new user
+    const res = await request(app).post('/v2/user').send({
       "first_name": "Anuraag",
       "last_name": "Bathula",
       "password": "AnuraagPWD",
@@ -124,8 +124,8 @@ describe('A03- Create an account', () => {
     expect(res.body.account_created).not.toBe("");
     expect(res.body.account_updated).not.toBe("");
 
-    // Make a get request to the /v1/user endpoint to verify user
-    const res1 = await request(app).get('/v1/user')
+    // Make a get request to the /v2/user endpoint to verify user
+    const res1 = await request(app).get('/v2/user')
     .auth('anuraag@example.com', 'AnuraagPWD')
     .set('Content-Type', 'application/json');
 
@@ -141,8 +141,8 @@ describe('A03- Create an account', () => {
 describe('A03- Update the account', () => {
   it('should validate that account was updated using the GET call', async () => { 
 
-    // Make a put request to the /v1/user endpoint to update user
-    const res = await request(app).put('/v1/user')
+    // Make a put request to the /v2/user endpoint to update user
+    const res = await request(app).put('/v2/user')
     .auth('anuraag@example.com', 'AnuraagPWD')
     .send({
       "first_name": "AnuraagMOD",
@@ -152,8 +152,8 @@ describe('A03- Update the account', () => {
 
     expect(res.status).toBe(204);
 
-    // Make a get request to the /v1/user endpoint to verify user
-    const res1 = await request(app).get('/v1/user')
+    // Make a get request to the /v2/user endpoint to verify user
+    const res1 = await request(app).get('/v2/user')
     .auth('anuraag@example.com', 'AnuraagPWDMOD')
     .set('Content-Type', 'application/json');
 
