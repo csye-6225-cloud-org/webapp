@@ -22,7 +22,7 @@ module.exports = app => {
     router.get("/validate", user.validateuser);
 
     //base route
-    app.use('/v2/user', router);
+    app.use('/v1/user', router);
 
     async function passwordAuthorizer (username, password, cb) {
         logger.debug("Entered user.routes.passwordAuthorizer");
